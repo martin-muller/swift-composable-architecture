@@ -40,15 +40,11 @@ public struct StackState<Element> {
     _read { yield self._dictionary[id] }
     _modify { yield &self._dictionary[id] }
     set {
-      switch (self.ids.contains(id), newValue, _XCTIsTesting) {
-      case (true, _, _), (false, .some, true):
+      switch (self.ids.contains(id), newValue) {
+      case (true, _), (false, .some):
         self._dictionary[id] = newValue
-      case (false, .some, false):
-        if !_XCTIsTesting {
-          runtimeWarn("Can't assign element at missing ID.")
-        }
-      case (false, .none, _):
-        break
+      case (false, .none):
+          self._dictionary[id] = nil
       }
     }
   }
